@@ -1,28 +1,28 @@
 <template>
-  <div id="app">
-    <img src="./assets/logo.png">
-    <hello></hello>
+  <div id="app" class="container">
+    <router-link to='/index'>index</router-link>
+    <router-link to='/login'>login</router-link>
+    <router-view></router-view>
   </div>
 </template>
 
 <script>
-import Hello from './components/Hello'
+    import './assets/js/jquery-2.0.3.min.js';
+    import './assets/js/bootstrap.min.js';
+    import './assets/js/bootstrap-switch.min.js';
 
-export default {
-  name: 'app',
-  components: {
-    Hello
-  }
-}
+    export default {
+        name: 'app',
+        components: {
+
+        }
+    }
 </script>
 
 <style>
-#app {
-  font-family: 'Avenir', Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
-}
+    #app {
+        /*background: url(./assets/images/wallpaper1_1_h800.jpg) 50% 20%;*/
+        width: 100%;
+        height: 100%;
+    }
 </style>
