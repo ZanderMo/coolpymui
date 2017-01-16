@@ -24,5 +24,6 @@
         /*background: url(./assets/images/wallpaper1_1_h800.jpg) 50% 20%;*/
         width: 100%;
         height: 100%;
+        font-size: 14px;
     }
 </style>
