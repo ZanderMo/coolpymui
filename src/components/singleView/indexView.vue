@@ -1,11 +1,5 @@
 <template>
     <div id="page">
-        <div class="login-header ">
-            <img class="login-header-logo" />
-            <span class="glyphicon glyphicon-chevron-left"></span>
-            <slot>此处为面包屑导航内容</slot>
-        </div>
-        
         <router-view></router-view>
         <p><br></p><p><br></p>
         <div class="nav-bottom">

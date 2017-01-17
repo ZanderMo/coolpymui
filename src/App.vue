@@ -1,8 +1,15 @@
 <template>
-  <div id="app" class="container">
-    <router-link to='/index'>index</router-link>
-    <router-link to='/login'>login</router-link>
+  <div id="app" >
+    <div class="login-header">
+        <img class="login-header-logo" />
+        <span class="glyphicon glyphicon-chevron-left"></span>
+        <slot>此处为面包屑导航内容</slot>
+        <router-link to='/index'>index</router-link>
+        <router-link to='/login'>login</router-link>
+    </div>
+    <div class="top-space"></div>
     <router-view></router-view>
+    <div class="top-space"></div>
   </div>
 </template>
 
@@ -25,5 +32,21 @@
         width: 100%;
         height: 100%;
         font-size: 14px;
+    }
+    
+    .login-header {
+        height: 40px;
+        width: 100%;
+        position: fixed;
+        top: 0;
+        background-color: #f5f5f5;
+        line-height: 40px;
+        border-top: 1px solid #dedede;
+        box-shadow: 0px 0px 7px #666;
+        z-index: 999;
+    }
+    
+    .top-space {
+        height: 50px;
     }
 </style>

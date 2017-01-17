@@ -13,16 +13,8 @@
                 <div class="panel-body">
                   <ul>
                       <li v-for="item in Device.RNodes" >
-                            <div v-if="item.Type==1"><span style="float:left;">{{item.Title}}:</span>
-                                <span style="float:right;"><input type="checkbox" data-on-color="info" data-off-color="warning" id="joinSwitch" ></span>
-                                {{item.CtrlerVal}}
-                            </div>
-                            <div v-if="item.Type==2">{{item.Title}}:<input type="text" :value="item.CtrlerVal"> <button>发送</button></div>
-                            <div v-if="item.Type==3">{{item.Title}}: led <input type="range" style="width:50%;display: inline-block;" max="100" min="0" step="5"> 可调灯
-                            <div v-if="item.Type==4">{{item.Title+' '+item.Type+' '+item.CtrlerVal}}</div>
-                            <div v-if="item.Type==5">{{item.Title+' '+item.Type+' '+item.CtrlerVal}}</div>
-                            <div v-if="item.Type==6">{{item.Title+' '+item.Type+' '+item.CtrlerVal}}</div>
-                            <div v-if="item.Type==7">{{item.Title+' '+item.Type+' '+item.CtrlerVal}}</div>
+
+                            <div>{{item.Title+' '+item.Type+' '+item.CtrlerVal}}</div>
                       </li>
                   </ul>
                 </div>
