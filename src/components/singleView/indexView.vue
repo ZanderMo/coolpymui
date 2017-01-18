@@ -7,8 +7,8 @@
         <div class="nav-bottom">
             <ul class="nav navbar-fixed-bottom" role="tablist">
                 <li role="presentation" ><router-link to="/index/devices" active-class="active" transition="fade"><span class="glyphicon glyphicon-dashboard"></span> 我的设备</router-link></li>
-                <li role="presentation" ><router-link to="/index/manage" active-class="active"><span class="glyphicon glyphicon-th-list"></span> 管理枢纽</router-link></li>
                 <li role="presentation" ><router-link to="/index/setting" active-class="active"><span class="glyphicon glyphicon-cog"></span> 设置</router-link></li>
+                <li role="presentation" ><router-link to="/index/aboutCP" active-class="active"><span class="glyphicon glyphicon-th-list"></span> 关于COOLPY</router-link></li>
             </ul>
         </div>
     </div>

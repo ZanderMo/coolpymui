@@ -15,8 +15,9 @@ window.API_URL = 'http://192.168.2.71:6543';
 import login from './components/singleView/loginView.vue'
 import index from './components/singleView/indexView.vue'
 import devices from './components/common/devices.vue'
-import manage from './components/common/manage.vue'
+import charts from './components/common/charts.vue'
 import setting from './components/common/setting.vue'
+import aboutCP from './components/common/aboutCP.vue'
 
 Vue.use(VueRouter);
 
@@ -26,8 +27,9 @@ const router = new VueRouter({
             component: index,
             children: [
                 { path: "devices", component: devices },
-                { path: "manage", component: manage },
+                { path: "charts", component: charts },
                 { path: "setting", component: setting },
+                { path: "aboutCP", component: aboutCP },
             ]
         },
         { path: '/login', component: login },

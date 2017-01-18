@@ -16,7 +16,8 @@
                 <div class="panel-body" >
                   <ul>
                       <li v-for="item in Device.RNodes" >
-                            <div v-if="item.Type===1" class="deviceItem"><span style="float:left;">{{item.Title}}:</span>
+                            <div v-if="item.Type===1" class="deviceItem">
+                                <span style="float:left;">{{item.Title}}:</span>
                                 <span style="float:right;"><input type="checkbox" data-on-color="info" data-off-color="warning" id="joinSwitch" ></span>
                                 <div style="clear:both;border:none;"></div>
                             </div>
@@ -26,10 +27,10 @@
                                     <span class="input-group-addon" style="padding:0px;"><button style="border: 0;background-color:#f0ad4e;height: 32px;width: 50px;color:#fff">发 送</button></span>
                                  </div>
                                 <div v-if="item.Type===3" class="deviceItem">{{item.Title}}: LED-可调灯 当前值：{{item.CtrlerVal}}<input type="range" style="display: block;" :max="item.CtrlerVal.split(',')[2]" :min="item.CtrlerVal.split(',')[1]" :step="item.CtrlerVal.split(',')[3]" :value="item.CtrlerVal.split(',')[0]"> </div>
-                                <div v-if="item.Type===4" class="deviceItem">{{item.Title+' '+item.Type+' '+item.CtrlerVal}}</div>
-                                <div v-if="item.Type===5" class="deviceItem">{{item.Title+' '+item.Type+' '+item.CtrlerVal}}</div>
-                                <div v-if="item.Type===6" class="deviceItem">{{item.Title+' '+item.Type+' '+item.CtrlerVal}}</div>
-                                <div v-if="item.Type===7" class="deviceItem">{{item.Title+' '+item.Type+' '+item.CtrlerVal}}</div>
+                                <div v-if="item.Type===4" class="deviceItem"><img src="../../assets/images/val.png" class="DeviceImg">{{item.Title+' '+item.Type+' '+item.CtrlerVal}}</div>
+                                <div v-if="item.Type===5" class="deviceItem"><img src="../../assets/images/gps.png" class="DeviceImg">{{item.Title+' '+item.Type+' '+item.CtrlerVal}}</div>
+                                <div v-if="item.Type===6" class="deviceItem"><img src="../../assets/images/gen.png" class="DeviceImg">{{item.Title+' '+item.Type+' '+item.CtrlerVal}}</div>
+                                <div v-if="item.Type===7" class="deviceItem"><img src="../../assets/images/img.png" class="DeviceImg">{{item.Title+' '+item.Type+' '+item.CtrlerVal}}</div>
                       </li>
                   </ul>
                 </div>
@@ -62,12 +63,44 @@
                                     <input type="text" class="form-control" placeholder="填写枢纽标签!" id="HubTagInput">
                                     <span class="input-group-addon" @click="addTag" style="cursor:pointer;">添加标签</span>
                                  </div>
-                                 <div ><ul><li v-for="(tag,index) in manageHubEv.HubTag">{{tag}}<a @click="deleteTag(index)" id="tag"> X</a></li></ul>
+                                 <div ><ul><li v-for="(tag,index) in manageHubEv.HubTags">{{tag}}<a @click="deleteTag(index)" id="tag"> X</a></li></ul>
                                  <div style="clear:both"></div>
                                  </div>
                             </div>
                              <div v-if="this.manageHubEv.Type=='addDevice'">
-
+                                 {{manageHubEv.DeviceType}}
+                                        <div  class="input-group" style="margin:3px 0 5px 0">
+                                            <span class="input-group-addon">节点ID:</span>
+                                            <input type="text" class="form-control" placeholder="" disabled v-model="manageHubEv.DeviceID">
+                                        </div>
+                                        <div  class="input-group" style="margin:3px 0 5px 0">
+                                            <span class="input-group-addon">节点名称:</span>
+                                            <input type="text" class="form-control" placeholder="填写节点名称!" v-model="manageHubEv.DeviceTitle">
+                                        </div>
+                                        <div  class="input-group" style="margin:3px 0 5px 0">
+                                            <span class="input-group-addon">节点描述:</span>
+                                            <input type="text" class="form-control" placeholder="填写节点描述!" v-model="manageHubEv.DeviceAbout">
+                                        </div>
+                                        <div  class="input-group" style="margin:3px 0 5px 0">
+                                            <span class="input-group-addon">节点类型:</span>
+                                            <select class="form-control" v-model="manageHubEv.DeviceType">
+                                                <option value="1">控制器-开关</option>
+                                                <option value="2">控制器-自定义型</option>
+                                                <option value="3">控制器-约束型</option>
+                                                <option value="4">传感器-数值型</option>
+                                                <option value="5">传感器-GPS</option>
+                                                <option value="6">传感器-自定义型</option>
+                                                <option value="7">传感器-图片</option>
+                                            </select>
+                                        </div>
+                                        <div  class="input-group" style="margin:3px 0 5px 0">
+                                            <span class="input-group-addon">节点标签:</span>
+                                            <input type="text" class="form-control" placeholder="填写节点标签!" id="DeviceTagInput">
+                                            <span class="input-group-addon" @click="addTag" style="cursor:pointer;">添加标签</span>
+                                        </div>
+                                        <div ><ul><li v-for="(tag,index) in manageHubEv.DeviceTags">{{tag}}<a @click="deleteTag(index)" id="tag"> X</a></li></ul>
+                                        <div style="clear:both"></div>
+                                        </div>
                             </div>
                         </div>
                         <div class="modal-footer">
@@ -99,8 +132,14 @@
                     Massage: '',
                     MassageTitle: '',
                     HubTitle: '',
-                    HubTag: [],
+                    HubTags: [],
                     HubAbout: '',
+                    DeviceID: '',
+                    DeviceType: '',
+                    DeviceTitle: '',
+                    DeviceAbout: '',
+                    DeviceTags: [],
+
                 }
             }
         },
@@ -140,7 +179,7 @@
                 } else if (this.manageHubEv.Type == 'editHub') {
                     this.manageHubEv.HubTitle = dev.Title;
                     this.manageHubEv.HubAbout = dev.About;
-                    this.manageHubEv.HubTag = dev.Tags;
+                    this.manageHubEv.HubTags = dev.Tags;
                     this.manageHubEv.MassageTitle = '编辑枢纽!';
                     this.manageHubEv.Massage = '';
                 } else if (this.manageHubEv.Type == 'addHub') {
@@ -178,7 +217,7 @@
                     let hubObj = {
                         Title: self.manageHubEv.HubTitle,
                         About: self.manageHubEv.HubAbout,
-                        Tags: self.manageHubEv.HubTag
+                        Tags: self.manageHubEv.HubTags
                     };
                     if (hubObj.Title && hubObj.About) {
                         $.ajax({
@@ -209,12 +248,44 @@
                     }
 
                 } else if (type == 'addDevice') { //添加枢纽中的控制节点！
-
+                    let DeviceObj = {
+                        Title: self.manageHubEv.DeviceTitle,
+                        About: self.manageHubEv.DeviceAbout,
+                        Tags: self.manageHubEv.DeviceTags,
+                        Type: Number(self.manageHubEv.DeviceType)
+                    };
+                    if (DeviceObj.Title && DeviceObj.About && DeviceObj.Type) {
+                        $.ajax({
+                            url: window.API_URL + '/api/hub/' + self.manageHubEv.HubID + '/nodes',
+                            dataType: 'json',
+                            type: 'post',
+                            data: JSON.stringify(DeviceObj),
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'Authorization': 'Basic ' + self.identity
+                            },
+                            success: function(result) {
+                                //success 和.ajax()的.done()二选一，都是处理成功后的回调。
+                                if (result.ok == 1) {
+                                    alert("添加成功!");
+                                } else {
+                                    alert("提交错误");
+                                }
+                                self.getDevices();
+                            },
+                            error: function(err) {
+                                alert("请求出错！")
+                            }
+                        })
+                    } else {
+                        alert("请填写 节点名称,节点描述,节点类型!");
+                        return false;
+                    }
                 } else if (type == 'addHub') { //添加枢纽！
                     let hubObj = {
                         Title: self.manageHubEv.HubTitle,
                         About: self.manageHubEv.HubAbout,
-                        Tags: self.manageHubEv.HubTag
+                        Tags: self.manageHubEv.HubTags
                     };
                     if (hubObj.Title && hubObj.About) {
                         $.ajax({
@@ -249,14 +320,27 @@
                 $('.hubManage').hide();
             },
             addTag: function() {
-                let value = $('#HubTagInput').val();
-                if ($.trim(value) != "") {
-                    this.manageHubEv.HubTag.push($.trim(value));
-                    $('#HubTagInput').val('');
+                if (this.manageHubEv.Type == "addHub" || this.manageHubEv.Type == "editHub") {
+                    let value = $('#HubTagInput').val();
+                    if ($.trim(value) != "") {
+                        this.manageHubEv.HubTags.push($.trim(value));
+                        $('#HubTagInput').val('');
+                    }
+                } else if (this.manageHubEv.Type == "addDevice") {
+                    let value = $('#DeviceTagInput').val();
+                    if ($.trim(value) != "") {
+                        this.manageHubEv.DeviceTags.push($.trim(value));
+                        $('#HubTagInput').val('');
+                    }
                 }
             },
             deleteTag: function(index) {
-                this.manageHubEv.HubTag.splice(index, 1);
+
+                if (this.manageHubEv.Type == "addHub" || this.manageHubEv.Type == "editHub") {
+                    this.manageHubEv.HubTags.splice(index, 1);
+                } else if (this.manageHubEv.Type == "addDevice") {
+                    this.manageHubEv.DeviceTags.splice(index, 1);
+                }
             },
         },
         filters: {
@@ -285,7 +369,7 @@
     .devices-box {
         padding: 10px;
         .panel {
-            box-shadow: 0px 2px 7px #cdcdcd;
+            box-shadow: 0px 1px 5px #cdcdcd;
             padding: 1px;
             margin-right: 5%;
             .panel-collapse {
@@ -294,11 +378,18 @@
                     ul {
                         li {
                             list-style: none;
+                            border: 0;
                             .deviceItem {
                                 border: 1px solid #dedede;
                                 margin-bottom: 4px;
                                 line-height: 35px;
                                 padding: 3px;
+                                border-radius: 5px;
+                                box-shadow: 0px 0px 7px #dedede inset;
+                                .DeviceImg {
+                                    height: 35px;
+                                    width: auto;
+                                }
                             }
                         }
                     }
@@ -336,6 +427,7 @@
             }
         }
         #devicesMbox {
+            margin-top: 40px;
             .modal-box {
                 .modal-content {
                     .modal-body {
