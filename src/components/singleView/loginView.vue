@@ -69,7 +69,12 @@
 
                     error: function(err) {
                         //error 和.ajax()的.fail()二选一，都是处理请求失败后的回调
-                        alert(err)
+                        if (err.statusText == 'Unauthorized') {
+                            alert("用户密码错误！")
+                        } else if (err.statusText == 'error') {
+                            alert("登陆失败！")
+                        }
+
                     }
                 })
             }
@@ -82,7 +87,6 @@
                 console.log(event); // jQuery event
                 console.log(state); // true | false
                 self.onJoinSwitch = state;
-                alert(self.onJoinSwitch);
             });
 
         }

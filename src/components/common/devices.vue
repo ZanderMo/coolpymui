@@ -1,5 +1,5 @@
 <template>
-    <div class="devices-box container"> 
+    <div class="devices-box"> 
             <div class="panel panel-default col-xs-12 col-sm-5" v-for="Device in Devices">
               <div class="panel-heading" role="tab" :id="'Device'+Device.Id">
                 <h4 class="panel-title">
@@ -10,7 +10,7 @@
                 </h4>
               </div>
               <div class="hubManage" :id="'mBtn'+Device.Id">
-                  <button class="btn btn-info btn-lg" @click="showManageBox('editHub',Device.Id)">修改枢纽</button><button class="btn btn-warning btn-lg" @click="showManageBox('addDevice',Device.Id)">添加节点</button><button class="btn btn-danger btn-lg" @click="showManageBox('delHub',Device.Id)">删除枢纽</button>
+                  <button class="btn btn-info btn-lg" @click="showManageBox('editHub',Device)">修改枢纽</button><button class="btn btn-warning btn-lg" @click="showManageBox('addDevice',Device)">添加节点</button><button class="btn btn-danger btn-lg" @click="showManageBox('delHub',Device)">删除枢纽</button>
               </div>
               <div :id="'DeviceID'+Device.Id" class="panel-collapse collapse" role="tabpanel" :aria-labelledby="'Device'+Device.Id">
                 <div class="panel-body" >
@@ -36,33 +36,37 @@
               </div>
       </div>
             <div class="modal fade" id="devicesMbox">
-                <div class="col-xs-12 col-sm-6 col-sm-offset-3 col-lg-4 col-lg-offset-4 login-box">
+                <div class="col-xs-12 col-sm-6 col-sm-offset-3 col-lg-4 col-lg-offset-4 modal-box">
                     <div class="modal-content">
                         <div class="modal-header">
                             <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-                            <h4 class="modal-title"><span class="glyphicon glyphicon-floppy-open"></span> {{this.manageHubEv.Title}}</h4>
+                            <h4 class="modal-title"><span class="glyphicon glyphicon-floppy-open"></span> {{this.manageHubEv.MassageTitle}}</h4>
                         </div>
                         <div class="modal-body">
-                            {{manageHubEv.massage}} {{manageHubEv.Type}}
-                            <div v-if="this.manageHubEv.Type=='editHub'||this.manageHubEv.Type=='ddHub'">
+                            {{manageHubEv.Massage}}
+                            <div v-if="this.manageHubEv.Type=='editHub'||this.manageHubEv.Type=='addHub'">
                                 <div  class="input-group" style="margin:3px 0 5px 0">
                                     <span class="input-group-addon">枢纽ID:</span>
-                                    <input type="text" class="form-control" placeholder="" disabled>
+                                    <input type="text" class="form-control" placeholder="" disabled v-model="manageHubEv.HubID">
                                  </div>
                                  <div  class="input-group" style="margin:3px 0 5px 0">
                                     <span class="input-group-addon">枢纽名称:</span>
-                                    <input type="text" class="form-control" placeholder="填写枢纽名称!" :value="manageHubEv.Type">
-                                 </div>
-                                 <div  class="input-group" style="margin:3px 0 5px 0">
-                                    <span class="input-group-addon">枢纽标签:</span>
-                                    <input type="text" class="form-control" placeholder="填写枢纽标签!">
+                                    <input type="text" class="form-control" placeholder="填写枢纽名称!" v-model="manageHubEv.HubTitle">
                                  </div>
                                  <div  class="input-group" style="margin:3px 0 5px 0">
                                     <span class="input-group-addon">枢纽描述:</span>
-                                    <input type="text" class="form-control" placeholder="填写枢纽描述!">
+                                    <input type="text" class="form-control" placeholder="填写枢纽描述!" v-model="manageHubEv.HubAbout">
+                                 </div>
+                                 <div  class="input-group" style="margin:3px 0 5px 0">
+                                    <span class="input-group-addon">枢纽标签:</span>
+                                    <input type="text" class="form-control" placeholder="填写枢纽标签!" id="HubTagInput">
+                                    <span class="input-group-addon" @click="addTag" style="cursor:pointer;">添加标签</span>
+                                 </div>
+                                 <div ><ul><li v-for="(tag,index) in manageHubEv.HubTag">{{tag}}<a @click="deleteTag(index)" id="tag"> X</a></li></ul>
+                                 <div style="clear:both"></div>
                                  </div>
                             </div>
-                            <div v-if="this.manageHubEv.Type=='addDevice'">
+                             <div v-if="this.manageHubEv.Type=='addDevice'">
 
                             </div>
                         </div>
@@ -74,7 +78,7 @@
                 </div><!-- /.modal-dialog -->
             </div><!-- /.modal -->
             <div class="addHub-box">
-                <a><h4 class="addHub-font"><span class="glyphicon glyphicon-cloud-upload"></span> 添加枢纽</h4>
+                <a @click="showManageBox('addHub','0')"><h4 class="addHub-font"><span class="glyphicon glyphicon-cloud-upload"></span> 添加枢纽</h4>
                 <div class="addHub-btn"><span class="glyphicon glyphicon-plus"></span></div>
                 </a>
             </div>
@@ -92,9 +96,11 @@
                 manageHubEv: {
                     HubID: '',
                     Type: '',
-                    massage: '',
-                    Title: '',
-
+                    Massage: '',
+                    MassageTitle: '',
+                    HubTitle: '',
+                    HubTag: [],
+                    HubAbout: '',
                 }
             }
         },
@@ -105,26 +111,11 @@
                 $.ajax({
                     url: window.API_URL + '/api/hubs/all',
                     type: 'GET',
-                    //context: document.getElementById('input1'),
-                    //这个对象用于设置 Ajax 相关回调函数的上下文。也就是说，让回调函数内 this 指向这个对象（如果不设定这个参数，那么 this 就指向调用本次 AJAX 请求时传递的 options 参数）
                     beforeSend: function(xhr) {
-                        //在发送请求之前调用，并且传入一个 XMLHttpRequest 作为参数。
-                        //xhr.setRequestHeader("U-ApiKey", "key-value"),
-                        //xhr.setRequestHeader("Content-Type", "application/octet-stream")
                         xhr.setRequestHeader('Authorization', 'Basic ' + self.identity)
                     },
 
-                    complete: function(XHR, TS) {
-                        //请求完成后回调函数 (请求成功或失败之后均调用)
-                        //TS is 'success' or 'error',
-                        //XHR包含是否成功信息的对象.返回数据在responseText字符串内，
-                        //字符串用JSON.parse转为json对象才能以.形式读取里面对象。
-                        //input1.value = JSON.parse(XHR.responseText).data.title;
-                    },
-
                     success: function(result) {
-                        //success 和.ajax()的.done()二选一，都是处理成功后的回调。
-                        //alert(result.data.title);
                         self.Devices = result.data;
                     },
 
@@ -137,21 +128,24 @@
             showManageBtn: function(bnt) {
                 $(bnt).toggle(100);
             },
-            showManageBox: function(type, id) {
-                this.manageHubEv.HubID = id;
+            showManageBox: function(type, dev) {
+                this.manageHubEv.HubID = dev.Id;
                 this.manageHubEv.Type = type;
                 if (this.manageHubEv.Type == 'delHub') {
-                    this.manageHubEv.Title = '删除枢纽!';
-                    this.manageHubEv.massage = '你确认要删除ID为：' + this.manageHubEv.HubID + '的枢纽吗？ 请谨慎，此操作将会把选中枢纽相关的节点、数据结点全部删除!';
+                    this.manageHubEv.MassageTitle = '删除枢纽!';
+                    this.manageHubEv.Massage = '你确认要删除ID为：' + this.manageHubEv.HubID + '的枢纽吗？ 请谨慎，此操作将会把选中枢纽相关的节点、数据结点全部删除!';
                 } else if (this.manageHubEv.Type == 'addDevice') {
-                    this.manageHubEv.Title = '添加控制节点！';
-                    this.manageHubEv.massage = '';
+                    this.manageHubEv.MassageTitle = '添加控制节点！';
+                    this.manageHubEv.Massage = '';
                 } else if (this.manageHubEv.Type == 'editHub') {
-                    this.manageHubEv.Title = '编辑枢纽!';
-                    this.manageHubEv.massage = '';
+                    this.manageHubEv.HubTitle = dev.Title;
+                    this.manageHubEv.HubAbout = dev.About;
+                    this.manageHubEv.HubTag = dev.Tags;
+                    this.manageHubEv.MassageTitle = '编辑枢纽!';
+                    this.manageHubEv.Massage = '';
                 } else if (this.manageHubEv.Type == 'addHub') {
-                    this.manageHubEv.Title = '添加枢纽!';
-                    this.manageHubEv.massage = '';
+                    this.manageHubEv.MassageTitle = '添加枢纽!';
+                    this.manageHubEv.Massage = '';
                 }
                 $('#devicesMbox').modal('show')
             },
@@ -181,13 +175,89 @@
                         }
                     })
                 } else if (type == 'editHub') { //修改枢纽
+                    let hubObj = {
+                        Title: self.manageHubEv.HubTitle,
+                        About: self.manageHubEv.HubAbout,
+                        Tags: self.manageHubEv.HubTag
+                    };
+                    if (hubObj.Title && hubObj.About) {
+                        $.ajax({
+                            url: window.API_URL + '/api/hub/' + self.manageHubEv.HubID,
+                            dataType: 'json',
+                            type: 'put',
+                            data: JSON.stringify(hubObj),
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'Authorization': 'Basic ' + self.identity
+                            },
+                            success: function(result) {
+                                //success 和.ajax()的.done()二选一，都是处理成功后的回调。
+                                if (result.ok == 1) {
+                                    alert("修改成功!");
+                                } else {
+                                    alert("提交错误");
+                                }
+                                self.getDevices();
+                            },
+                            error: function(err) {
+                                alert("请求出错！")
+                            }
+                        })
+                    } else {
+                        alert("请填写枢纽名称和描述!");
+                        return false;
+                    }
 
                 } else if (type == 'addDevice') { //添加枢纽中的控制节点！
+
+                } else if (type == 'addHub') { //添加枢纽！
+                    let hubObj = {
+                        Title: self.manageHubEv.HubTitle,
+                        About: self.manageHubEv.HubAbout,
+                        Tags: self.manageHubEv.HubTag
+                    };
+                    if (hubObj.Title && hubObj.About) {
+                        $.ajax({
+                            url: window.API_URL + '/api/hubs',
+                            dataType: 'json',
+                            type: 'post',
+                            data: JSON.stringify(hubObj),
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'Authorization': 'Basic ' + self.identity
+                            },
+                            success: function(result) {
+                                //success 和.ajax()的.done()二选一，都是处理成功后的回调。
+                                if (result.ok == 1) {
+                                    alert("添加成功!");
+                                } else {
+                                    alert("提交错误");
+                                }
+                                self.getDevices();
+                            },
+                            error: function(err) {
+                                alert("请求出错！")
+                            }
+                        })
+                    } else {
+                        alert("请填写枢纽名称和描述!");
+                        return false;
+                    }
 
                 }
                 $('#devicesMbox').modal('hide');
                 $('.hubManage').hide();
-            }
+            },
+            addTag: function() {
+                let value = $('#HubTagInput').val();
+                if ($.trim(value) != "") {
+                    this.manageHubEv.HubTag.push($.trim(value));
+                    $('#HubTagInput').val('');
+                }
+            },
+            deleteTag: function(index) {
+                this.manageHubEv.HubTag.splice(index, 1);
+            },
         },
         filters: {
             typeSwitch: function(value) {
@@ -213,10 +283,11 @@
 
 <style lang="less">
     .devices-box {
+        padding: 10px;
         .panel {
             box-shadow: 0px 2px 7px #cdcdcd;
             padding: 1px;
-            margin-right: 8%;
+            margin-right: 5%;
             .panel-collapse {
                 .panel-body {
                     padding: 5px;
@@ -252,7 +323,7 @@
             }
             .addHub-btn {
                 text-align: center;
-                line-height: 35px;
+                line-height: 40px;
                 font-size: 20px;
                 margin-left: 5px;
                 border: 1px solid #dedede;
@@ -261,7 +332,24 @@
                 height: 40px;
                 float: right;
                 display: inline-block;
-                box-shadow: -1px -3px 7px #999 inset;
+                box-shadow: 0px 0px 7px #ddd inset;
+            }
+        }
+        #devicesMbox {
+            .modal-box {
+                .modal-content {
+                    .modal-body {
+                        ul {
+                            li {
+                                list-style: none;
+                                float: left;
+                                background-color: #dedede;
+                                margin-right: 2px;
+                                padding: 2px;
+                            }
+                        }
+                    }
+                }
             }
         }
     }
