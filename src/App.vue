@@ -43,7 +43,7 @@
         line-height: 40px;
         border-top: 1px solid #dedede;
         box-shadow: 0px 0px 7px #666;
-        z-index: 999;
+        z-index: 9;
     }
     
     .top-space {

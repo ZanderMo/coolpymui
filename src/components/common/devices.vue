@@ -2,12 +2,12 @@
     <div class="devices-box"> 
             <div class="panel panel-default col-xs-12 col-sm-5" v-for="Device in Devices">
               <div class="panel-heading" role="tab" :id="'Device'+Device.Id">
-                <h4 class="panel-title">
                   <a class="collapsed" data-toggle="collapse" data-parent="#accordion" :href="'#DeviceID'+Device.Id" aria-expanded="true" :aria-controls="'DeviceID'+Device.Id">
+                <h4 class="panel-title">
                     <span class="glyphicon glyphicon-magnet" ></span> ID:{{Device.Id}}  {{Device.Title}}
-                  </a>
-                  <button class="btn btn-success" style="float:right;margin-top: -6px;padding:4px;" @click="showManageBtn('#mBtn'+Device.Id)">管 理 枢 纽 <span class="glyphicon glyphicon-collapse-down"></span></button>
                 </h4>
+                </a>
+                <button class="btn btn-success" style="float:right;padding:4px;z-index: 10;margin-top:-5px;" @click="showManageBtn('#mBtn'+Device.Id)">管 理 枢 纽 <span class="glyphicon glyphicon-collapse-down"></span></button>
               </div>
               <div class="hubManage" :id="'mBtn'+Device.Id">
                   <button class="btn btn-info btn-lg" @click="showManageBox('editHub',Device)">修改枢纽</button><button class="btn btn-warning btn-lg" @click="showManageBox('addDevice',Device)">添加节点</button><button class="btn btn-danger btn-lg" @click="showManageBox('delHub',Device)">删除枢纽</button>
@@ -119,13 +119,13 @@
                 </div><!-- /.modal-dialog -->
             </div><!-- /.modal -->
             <div class="addHub-box">
-                <a @click="showManageBox('addHub','0')"><h4 class="addHub-font"><span class="glyphicon glyphicon-cloud-upload"></span> 添加枢纽</h4>
+                <a @click="showManageBox('addHub','0')"><h4 class="addHub-font"> 添加枢纽</h4>
                 <div class="addHub-btn"><span class="glyphicon glyphicon-plus"></span></div>
                 </a>
             </div>
-            <transition name="slide">
+            
                 <router-view ></router-view>
-            </transition>
+           
             
     </div>
 </template>
@@ -378,12 +378,23 @@
 </script>
 
 <style lang="less">
+    a:active,
+    a:link,
+    a:visited {
+        text-decoration: none;
+    }
+    
     .devices-box {
         padding: 10px;
         .panel {
             box-shadow: 0px 1px 5px #cdcdcd;
             padding: 1px;
             margin-right: 5%;
+            .panel-title {
+                width: 65%;
+                height: 100%;
+                display: inline-block;
+            }
             .panel-collapse {
                 .panel-body {
                     padding: 5px;
@@ -418,11 +429,13 @@
         }
         .addHub-box {
             position: fixed;
-            bottom: 50px;
+            top: 0px;
+            z-index: 10;
             right: 5px;
             line-height: 40px;
             .addHub-font {
                 display: inline-block;
+                text-shadow: 1px 1px 2px #428bca;
             }
             .addHub-btn {
                 text-align: center;
@@ -455,17 +468,6 @@
                     }
                 }
             }
-        }
-        .slide-enter-active,
-        .slide-leave-active {
-            transition: all .5s;
-        }
-        .slide-enter,
-        .slide-leave-to
-        /* .component-fade-leave-active for <2.1.8 */
-        {
-            opacity: 0.6;
-            transform: translateX(-100%);
         }
     }
 </style>

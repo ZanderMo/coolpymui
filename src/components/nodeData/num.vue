@@ -1,13 +1,13 @@
 <template>
+        <transition name="slide">
     <div class="num-box">
         <div class="nav">
             <h4>ID:{{$route.query.node.Id}} 名称:{{$route.query.node.Title}} </h4>
         <router-link :to="{path:'/index/devices'}"><button class="btn btn-danger closeBtn">关 闭</button></router-link>
         </div>
-        <div>
+        <div class="nodeAbout">节点描述：{{$route.query.node.About}}<div>
         <ul><li>节点标签:</li><li v-for="tag in $route.query.node.Tags">{{tag}}</li></ul>
         <div style="clear:both"></div>
-        </div>
         <div>选择开始时间：<input type="datetime" name="user_date"  id="stTime" v-model="stTime"/></div>
         <div>选择结束时间：<input type="datetime" name="user_date"  id="endTime" v-model="endTime"/></div>
         <div  class="input-group">
@@ -18,8 +18,9 @@
     
         <div id="numChart-box"><h3>节点在所选时间段没有数据</h3></div>
     </div>
-
+</transition>
 </template>
+
 
 <script>
     import echarts from '../../assets/js/echarts.min.js'
@@ -133,9 +134,13 @@
         div {
             margin: 10px 0;
         }
+        .nodeAbout {
+            float: left;
+        }
         ul {
             margin-left: 0px;
             float: left;
+            padding: 0px;
             li {
                 float: left;
                 margin: 0px 2px 10px 0px;
@@ -174,5 +179,19 @@
         h3 {
             text-align: center;
         }
+    }
+    
+    .slide-enter-active,
+    .slide-leave-active {
+        transition: all .5s;
+    }
+    
+    .slide-enter,
+    .slide-leave-to
+    /* .component-fade-leave-active for <2.1.8 */
+    
+    {
+        opacity: 0.6;
+        transform: translateX(-100%);
     }
 </style>

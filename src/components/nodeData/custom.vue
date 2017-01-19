@@ -1,4 +1,5 @@
 <template>
+        <transition name="slide">
     <div class="num-box">
         <div class="nav">
             <h4>ID:{{$route.query.node.Id}} 名称:{{$route.query.node.Title}} </h4>
@@ -18,8 +19,9 @@
     
         <div id="numChart-box"><h3>节点在所选时间段没有数据</h3></div>
     </div>
-
+</transition>
 </template>
+
 
 <script>
     import echarts from '../../assets/js/echarts.min.js'
@@ -174,5 +176,19 @@
         h3 {
             text-align: center;
         }
+    }
+    
+    .slide-enter-active,
+    .slide-leave-active {
+        transition: all .5s;
+    }
+    
+    .slide-enter,
+    .slide-leave-to
+    /* .component-fade-leave-active for <2.1.8 */
+    
+    {
+        opacity: 0.6;
+        transform: translateX(-100%);
     }
 </style>
