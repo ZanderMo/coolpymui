@@ -27,10 +27,18 @@
                                     <span class="input-group-addon" style="padding:0px;"><button style="border: 0;background-color:#f0ad4e;height: 32px;width: 50px;color:#fff">发 送</button></span>
                                  </div>
                                 <div v-if="item.Type===3" class="deviceItem">{{item.Title}}: LED-可调灯 当前值：{{item.CtrlerVal}}<input type="range" style="display: block;" :max="item.CtrlerVal.split(',')[2]" :min="item.CtrlerVal.split(',')[1]" :step="item.CtrlerVal.split(',')[3]" :value="item.CtrlerVal.split(',')[0]"> </div>
-                                <div v-if="item.Type===4" class="deviceItem"><img src="../../assets/images/val.png" class="DeviceImg">{{item.Title+' '+item.Type+' '+item.CtrlerVal}}</div>
-                                <div v-if="item.Type===5" class="deviceItem"><img src="../../assets/images/gps.png" class="DeviceImg">{{item.Title+' '+item.Type+' '+item.CtrlerVal}}</div>
-                                <div v-if="item.Type===6" class="deviceItem"><img src="../../assets/images/gen.png" class="DeviceImg">{{item.Title+' '+item.Type+' '+item.CtrlerVal}}</div>
-                                <div v-if="item.Type===7" class="deviceItem"><img src="../../assets/images/img.png" class="DeviceImg">{{item.Title+' '+item.Type+' '+item.CtrlerVal}}</div>
+                                <div v-if="item.Type===4" class="deviceItem"><img src="../../assets/images/val.png" class="DeviceImg">ID:{{item.Id}} 名称：{{item.Title}} 
+                                <router-link :to="{path:'/index/devices/nodeNum',query: {hubID:Device.Id,node:item}}">查看</router-link>
+                                </div>
+                                <div v-if="item.Type===5" class="deviceItem"><img src="../../assets/images/gps.png" class="DeviceImg">ID:{{item.Id}} 名称：{{item.Title}} 
+                                <router-link :to="{path:'/index/devices/nodeGps',query: {hubID:Device.Id,node:item}}">查看</router-link>
+                                </div>
+                                <div v-if="item.Type===6" class="deviceItem"><img src="../../assets/images/gen.png" class="DeviceImg">ID:{{item.Id}} 名称：{{item.Title}} 
+                                <router-link :to="{path:'/index/devices/nodeCustom',query: {hubID:Device.Id,node:item}}">查看</router-link>
+                                </div>
+                                <div v-if="item.Type===7" class="deviceItem"><img src="../../assets/images/img.png" class="DeviceImg">ID:{{item.Id}} 名称：{{item.Title}} 
+                                <router-link :to="{path:'/index/devices/nodeImages',query: {hubID:Device.Id,node:item}}">查看</router-link>
+                                </div>
                       </li>
                   </ul>
                 </div>
@@ -115,6 +123,10 @@
                 <div class="addHub-btn"><span class="glyphicon glyphicon-plus"></span></div>
                 </a>
             </div>
+            <transition name="slide">
+                <router-view ></router-view>
+            </transition>
+            
     </div>
 </template>
 
@@ -443,6 +455,17 @@
                     }
                 }
             }
+        }
+        .slide-enter-active,
+        .slide-leave-active {
+            transition: all .5s;
+        }
+        .slide-enter,
+        .slide-leave-to
+        /* .component-fade-leave-active for <2.1.8 */
+        {
+            opacity: 0.6;
+            transform: translateX(-100%);
         }
     }
 </style>

@@ -10,14 +10,17 @@ Vue.use(MintUI);
 import './assets/css/bootstrap.min.css'
 import './assets/css/bootstrap-switch.min.css'
 
-window.API_URL = 'http://192.168.2.71:6543';
+window.API_URL = 'http://192.168.2.73:6543';
 
 import login from './components/singleView/loginView.vue'
 import index from './components/singleView/indexView.vue'
 import devices from './components/common/devices.vue'
-import charts from './components/common/charts.vue'
 import setting from './components/common/setting.vue'
 import aboutCP from './components/common/aboutCP.vue'
+import nodeNum from './components/nodeData/num.vue'
+import nodeGps from './components/nodeData/gps.vue'
+import nodeImages from './components/nodeData/images.vue'
+import nodeCustom from './components/nodeData/custom.vue'
 
 Vue.use(VueRouter);
 
@@ -26,10 +29,18 @@ const router = new VueRouter({
             path: '/index',
             component: index,
             children: [
-                { path: "devices", component: devices },
-                { path: "charts", component: charts },
                 { path: "setting", component: setting },
                 { path: "aboutCP", component: aboutCP },
+                {
+                    path: "devices",
+                    component: devices,
+                    children: [
+                        { path: "nodeNum", component: nodeNum },
+                        { path: "nodeGps", component: nodeGps },
+                        { path: "nodeImages", component: nodeImages },
+                        { path: "nodeCustom", component: nodeCustom },
+                    ]
+                },
             ]
         },
         { path: '/login', component: login },

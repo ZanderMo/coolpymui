@@ -62,6 +62,7 @@
                         //success 和.ajax()的.done()二选一，都是处理成功后的回调。
                         //alert(result.data.Uid);
                         sessionStorage.setItem('identity', self.identity);
+                        sessionStorage.setItem('ApiKey', result.data.Ukey);
                         self.$router.push({
                             path: '/index'
                         });
