@@ -1,22 +1,20 @@
 <template>
-        <transition name="slide">
-    <div class="num-box">
+<transition name="slide">
+    <div class="node-box">
         <div class="nav">
             <h4>ID:{{$route.query.node.Id}} 名称:{{$route.query.node.Title}} </h4>
         <router-link :to="{path:'/index/devices'}"><button class="btn btn-danger closeBtn">关 闭</button></router-link>
         </div>
-        <div>
-        <ul><li>节点标签:</li><li v-for="tag in $route.query.node.Tags">{{tag}}</li></ul>
+        <div class="nodeDivMargin">节点描述：{{$route.query.node.About}}</div>
+        <ul class="nodeDivMargin"><li>节点标签:</li><li v-for="tag in $route.query.node.Tags">{{tag}}</li></ul>
         <div style="clear:both"></div>
-        </div>
-        <div>选择开始时间：<input type="datetime" name="user_date"  id="stTime" v-model="stTime"/></div>
-        <div>选择结束时间：<input type="datetime" name="user_date"  id="endTime" v-model="endTime"/></div>
+        <div class="nodeDivMargin">选择开始时间：<input type="datetime" name="user_date"  id="stTime" v-model="stTime"/></div>
+        <div class="nodeDivMargin">选择结束时间：<input type="datetime" name="user_date"  id="endTime" v-model="endTime"/></div>
         <div  class="input-group">
             <span class="input-group-addon">数据量级:</span>
             <input type="text" class="form-control" placeholder="填写图表数量间距"  style="width:90%;">
         </div>
-        <button class="btn btn-info" style="float:left;">查询数据</button>
-    
+        <button class="btn btn-info nodeDivMargin" style="float:left;" @click="goGetData">查询数据</button>
         <div id="numChart-box"><h3>节点在所选时间段没有数据</h3></div>
     </div>
 </transition>
@@ -38,6 +36,7 @@
             }
 
         },
+
         methods: {
             getData: function() {
                 this.ApiKey = sessionStorage.getItem('ApiKey');
@@ -100,7 +99,8 @@
                                     }]
                                 });
                             } else {
-                                //alert("提交错误");
+                                let numChart = echarts.init(self.$el.children['numChart-box']);
+                                alert(result.err);
                             }
                         },
                         error: function(err) {
@@ -108,6 +108,9 @@
                         }
                     })
                 }
+            },
+            goGetData: function() {
+                this.getData();
             }
         },
         filters: {
@@ -123,21 +126,22 @@
 </script>
 
 <style lang="less">
-    .num-box {
+    .node-box {
         position: fixed;
         width: 100%;
         height: 100%;
         left: 0px;
         top: 0px;
-        background-color: rgba(255, 255, 255, 0.9);
+        background-color: #fff;
         z-index: 999;
         padding: 60px 5px 5px 5px;
-        div {
-            margin: 10px 0;
+        .nodeDivMargin{
+            margin-bottom: 10px;
         }
         ul {
             margin-left: 0px;
             float: left;
+            padding: 0px;
             li {
                 float: left;
                 margin: 0px 2px 10px 0px;
@@ -149,7 +153,7 @@
         .input-group {
             width: 70%;
             float: left;
-            margin: 0;
+            margin: 0 ;
         }
         .nav {
             position: absolute;
@@ -188,7 +192,7 @@
     /* .component-fade-leave-active for <2.1.8 */
     
     {
-        opacity: 0.6;
+        opacity: 0.7;
         transform: translateX(-100%);
     }
 </style>

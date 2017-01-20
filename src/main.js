@@ -17,10 +17,10 @@ import index from './components/singleView/indexView.vue'
 import devices from './components/common/devices.vue'
 import setting from './components/common/setting.vue'
 import aboutCP from './components/common/aboutCP.vue'
-import nodeNum from './components/nodeData/num.vue'
-import nodeGps from './components/nodeData/gps.vue'
-import nodeImages from './components/nodeData/images.vue'
-import nodeCustom from './components/nodeData/custom.vue'
+import nodeNum from './components/nodeData/nodeNum.vue'
+import nodeGps from './components/nodeData/nodeGps.vue'
+import nodeImages from './components/nodeData/nodeImages.vue'
+import nodeCustom from './components/nodeData/nodeCustom.vue'
 
 Vue.use(VueRouter);
 
