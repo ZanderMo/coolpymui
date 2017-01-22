@@ -3,7 +3,7 @@
     <div class="login-header">
         <img class="login-header-logo" />
         <span class="glyphicon glyphicon-chevron-left"></span>
-        <slot>此处为面包屑导航内容</slot>
+        <slot>--</slot>
         <router-link to='/index'>index</router-link>
         <router-link to='/login'>login</router-link>
     </div>
@@ -16,7 +16,6 @@
 <script>
     import './assets/js/jquery-2.0.3.min.js';
     import './assets/js/bootstrap.min.js';
-    import './assets/js/bootstrap-switch.min.js';
 
     export default {
         name: 'app',

@@ -19,9 +19,11 @@
                 </div>
         </div>
         <div class="modal-footer">
-            <div  class="autoJoin">自动登陆:
-            <input type="checkbox" data-on-color="info" data-off-color="warning" id="joinSwitch"></div>
+             <group style="margin-top:-20px;float:left;">
+                <x-switch title="自动登陆" ></x-switch>
+            </group>
             <button type="button" class="btn btn-primary login-bnt" @click="login">登 陆</button>
+            
         </div>
         </div><!-- /.modal-content -->
     </div><!-- /.modal-dialog -->
@@ -30,15 +32,19 @@
 
 <script>
     import Base64 from 'js-base64'
+    import { XSwitch, Group } from 'vux'
 
     export default {
         name: 'LoginView',
+        components: {
+            XSwitch,
+            Group
+        },
         data() {
             return {
                 identity: '',
                 userName: '',
                 passWord: '',
-                onJoinSwitch: false,
             }
 
         },
@@ -81,14 +87,7 @@
             }
         },
         mounted() {
-            var self = this;
-            $('[type="checkbox"]').bootstrapSwitch();
-            $('#joinSwitch').on('switchChange.bootstrapSwitch', function(event, state) {
-                console.log(this); // DOM element
-                console.log(event); // jQuery event
-                console.log(state); // true | false
-                self.onJoinSwitch = state;
-            });
+
 
         }
     }

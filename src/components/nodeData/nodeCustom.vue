@@ -10,13 +10,13 @@
         <div style="clear:both"></div>
         <div class="nodeDivMargin">选择开始时间：<input type="datetime" name="user_date"  id="stTime" v-model="stTime"/></div>
         <div>选择结束时间：<input type="datetime" name="user_date"  id="endTime" v-model="endTime"/></div>
-        <button class="btn btn-info" style="float:left;" @click="goGetData">查询数据</button>
+        <button class="btn btn-info" style="float:left;" @click="getData">查询数据</button>
     
         <div id="custom-box">
-        <ul><li>数据：</li>
+            <h3 v-if="!nodeData">节点在所选时间段没有数据</h3>
+        <ul>
         <li v-for="data in nodeData">
-            <h3 v-if="!data">节点在所选时间段没有数据</h3>
-            {{data.TimeStamp.substring(0,10).replace('T',' ')}} {{data.Value}}</li>
+            时间:{{data.TimeStamp.substring(0,19).replace('T',' ')}} 数量:{{data.Value}}</li>
         </ul>
         </div>
     </div>
@@ -32,7 +32,7 @@
                 nodeData: [],
                 ApiKey: '',
                 stTime: '2017-01-13T16:13:14Z',
-                endTime: '2017-01-20T16:13:14Z',
+                endTime: '2017-01-16T16:13:14Z',
 
             }
 
@@ -53,11 +53,11 @@
                         success: function(result) {
                             //success 和.ajax()的.done()二选一，都是处理成功后的回调。
                             if (result.ok == 1) {
-                                /*alert("添加成功!");*/
                                 self.nodeData = result.data;
 
                             } else {
                                 alert(result.err);
+                                self.nodeData = result.data;
                             }
                         },
                         error: function(err) {
@@ -66,9 +66,6 @@
                     })
                 }
             },
-            goGetData: function() {
-                this.getData();
-            }
         },
         filters: {
 

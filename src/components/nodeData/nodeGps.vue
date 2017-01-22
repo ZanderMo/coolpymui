@@ -11,9 +11,15 @@
                 <li v-for="tag in $route.query.node.Tags">{{tag}}</li>
             </ul>
             <div style="clear:both"></div>
-        <div class="nodeDivMargin">选择开始时间：<input type="datetime" name="user_date"  id="stTime" v-model="stTime"/></div>
-        <div class="nodeDivMargin">选择结束时间：<input type="datetime" name="user_date"  id="endTime" v-model="endTime"/></div>
-        <button class="btn btn-info nodeDivMargin" style="float:left;" @click="goGetData">查询数据</button>
+<div class="nodeDivMargin">
+    <group>
+        <datetime v-model="stTime" @on-change="" title="开始时间"></datetime>
+        <datetime v-model="endTime" format="YYYY-MM-DD HH:mm" @on-change="" title="结束时间"></datetime>
+    </group>
+</div>
+<div class="nodeDivMargin">选择结束时间：<input type="datetime" name="user_date" id="endTime" v-model="endTime" /></div>
+<button class="btn btn-info nodeDivMargin" style="float:left;" @click="getData">查询数据</button>
+<button class="btn btn-info nodeDivMargin" style="float:left;" @click="replay">回放</button>
 <div id="map-box">
     <h3>节点没有GPS数据</h3>
 </div>
@@ -22,30 +28,36 @@
 </template>
 
 
-<script>
+<script> 
+
+    import { Datetime, Group, XButton } from 'vux'
+
     export default {
         name: 'charts',
+        components: {
+            Datetime,
+            Group,
+            XButton
+        },
         data() {
             return {
                 numData: [],
                 ApiKey: '',
-                stTime: '2017-01-13T16:13:14Z',
-                endTime: '2017-01-20T16:13:14Z',
+                stTime: new Date().format("yyyy-MM-dd HH:mm"),
+                endTime: new Date().toString(),
             }
 
         },
         methods: {
             getData: function () {
+                alert(this.stTime);
                 this.ApiKey = sessionStorage.getItem('ApiKey');
-                var self = this;
-
-                var map = new BMap.Map("map-box"); // 定义地图
+                let self = this;
+                let map = new BMap.Map("map-box"); // 定义地图
                 map.addControl(new BMap.NavigationControl()); //增加左上角缩放
                 map.addControl(new BMap.ScaleControl({
                     anchor: BMAP_ANCHOR_BOTTOM_LEFT
                 })); //增加左下角标尺
-
-
 
                 $.ajax({
                     url: window.API_URL + '/api/hub/' + self.$route.query.hubID + '/node/' + self.$route.query.node.Id + '/json?start=' + self.stTime + '&end=' + self.endTime + '&interval=0&page=10',
@@ -59,10 +71,11 @@
                         //success 和.ajax()的.done()二选一，都是处理成功后的回调。
                         if (result.ok == 1) {
                             /*alert("添加成功!");*/
-                            map.centerAndZoom(new BMap.Point(result.data[0].Lng, result.data[0].Lat), 10);
+                            let startPoint = new BMap.Point(result.data[0].Lng, result.data[0].Lat);
+                            map.centerAndZoom(startPoint, 15);
                             for (let i = 0; i < result.data.length; i++) {
-                                let val=result.data[i];
-                                let point=new BMap.Point(val.Lng, val.Lat);
+                                let val = result.data[i];
+                                let point = new BMap.Point(val.Lng, val.Lat);
                                 let marker = new BMap.Marker(point);
                                 map.addOverlay(marker);
                                 //marker.setAnimation(BMAP_ANIMATION_BOUNCE); 跳跳图标
@@ -70,7 +83,7 @@
                                     width: 160,     // 信息窗口宽度
                                     height: 80,     // 信息窗口高度
                                 }
-                                var infoWindow = new BMap.InfoWindow("时间：" + val.TimeStamp.substring(0,19).replace('T',' ') + "<br/> 位置：" + val.Lng + "," + val.Lat + "<br/> 速度：" + val.Speed + "<br/> 修正：" + val.Offset, opts);
+                                let infoWindow = new BMap.InfoWindow("时间：" + val.TimeStamp.substring(0, 19).replace('T', ' ') + "<br/> 位置：" + val.Lng + "," + val.Lat + "<br/> 速度：" + val.Speed + "<br/> 修正：" + val.Offset, opts);
                                 marker.addEventListener("click", function () {
                                     map.openInfoWindow(infoWindow, point); //开启信息窗口
                                 });
@@ -85,6 +98,69 @@
                         alert("请求出错！")
                     }
                 })
+
+            },
+            replay: function () {
+                this.ApiKey = sessionStorage.getItem('ApiKey');
+                let self = this;
+                let map = new BMap.Map("map-box"); // 定义地图
+                map.addControl(new BMap.NavigationControl()); //增加左上角缩放
+                map.addControl(new BMap.ScaleControl({
+                    anchor: BMAP_ANCHOR_BOTTOM_LEFT
+                })); //增加左下角标尺
+                let arrPois = [], arrshus = [], lushu;
+                $.ajax({
+                    url: window.API_URL + '/api/hub/' + self.$route.query.hubID + '/node/' + self.$route.query.node.Id + '/json?start=' + self.stTime + '&end=' + self.endTime + '&interval=0&page=10',
+                    dataType: 'json',
+                    type: 'get',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'U-ApiKey': self.ApiKey
+                    },
+                    success: function (result) {
+                        //success 和.ajax()的.done()二选一，都是处理成功后的回调。
+                        if (result.ok == 1) {
+                            /*alert("添加成功!");*/
+                            let startPoint = new BMap.Point(result.data[0].Lng, result.data[0].Lat);
+                            map.centerAndZoom(startPoint, 15);
+                            for (let i = 0; i < result.data.length; i++) {
+                                let val = result.data[i];
+                                let point = new BMap.Point(val.Lng, val.Lat);
+                                let marker = new BMap.Marker(point);
+                                arrPois.push(point);
+                                arrshus.push({ lng: val.Lng, lat: val.Lat, pauseTime: 2 });
+                                map.addOverlay(marker);
+                                //marker.setAnimation(BMAP_ANIMATION_BOUNCE); 跳跳图标
+                                var opts = {
+                                    width: 160,     // 信息窗口宽度
+                                    height: 80,     // 信息窗口高度
+                                }
+                                let infoWindow = new BMap.InfoWindow("时间：" + val.TimeStamp.substring(0, 19).replace('T', ' ') + "<br/> 位置：" + val.Lng + "," + val.Lat + "<br/> 速度：" + val.Speed + "<br/> 修正：" + val.Offset, opts);
+                                marker.addEventListener("click", function () {
+                                    map.openInfoWindow(infoWindow, point); //开启信息窗口
+                                });
+                            }
+                            map.addOverlay(new BMap.Polyline(arrPois, { strokeColor: '#35b' }));
+                            map.setViewport(arrPois);
+                            lushu = new BMapLib.LuShu(map, arrPois, {
+                                defaultContent: '',
+                                autoView: true,//是否开启自动视野调整，如果开启那么路书在运动过程中会根据视野自动调整
+                                icon: new BMap.Icon('http://developer.baidu.com/map/jsdemo/img/car.png', new BMap.Size(57, 32), { anchor: new BMap.Size(27, 16) }),
+                                speed: 1500,
+                                enableRotation: true,//是否设置marker随着道路的走向进行旋转
+                                landmarkPois: arrshus
+                            });
+                            setTimeout(function () { lushu.start() }, 3000);
+
+                        } else {
+                            alert(result.err);
+                        }
+                    },
+                    error: function (err) {
+                        alert("请求出错！")
+                    }
+                })
+
             }
         },
         filters: {
@@ -92,6 +168,23 @@
         },
         mounted() {
             this.getData();
+            Date.prototype.Format = function (fmt) { //author: meizz   
+                var o = {
+                    "M+": this.getMonth() + 1,                 //月份   
+                    "d+": this.getDate(),                    //日   
+                    "h+": this.getHours(),                   //小时   
+                    "m+": this.getMinutes(),                 //分   
+                    "s+": this.getSeconds(),                 //秒   
+                    "q+": Math.floor((this.getMonth() + 3) / 3), //季度   
+                    "S": this.getMilliseconds()             //毫秒   
+                };
+                if (/(y+)/.test(fmt))
+                    fmt = fmt.replace(RegExp.$1, (this.getFullYear() + "").substr(4 - RegExp.$1.length));
+                for (var k in o)
+                    if (new RegExp("(" + k + ")").test(fmt))
+                        fmt = fmt.replace(RegExp.$1, (RegExp.$1.length == 1) ? (o[k]) : (("00" + o[k]).substr(("" + o[k]).length)));
+                return fmt;
+            }
         },
         watch() {
 

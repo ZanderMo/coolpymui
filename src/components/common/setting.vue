@@ -14,7 +14,7 @@
                   <ul>
                       <li v-for="item in Device.RNodes" >
                             <div v-if="item.Type==1"><span style="float:left;">{{item.Title}}:</span>
-                                <span style="float:right;"><input type="checkbox" data-on-color="info" data-off-color="warning" id="joinSwitch" ></span>
+                               
                                 {{item.CtrlerVal}}
                             </div>
                             <div v-if="item.Type==2">{{item.Title}}:<input type="text" :value="item.CtrlerVal"> <button>发送</button></div>
@@ -33,7 +33,7 @@
 </template>
 
 <script>
-    $('[type="checkbox"]').bootstrapSwitch();
+
     export default {
         name: 'devices',
         data() {
@@ -82,19 +82,10 @@
             },
         },
         filters: {
-            typeSwitch: function(value) {
-                switch (value) {
-                    case 1:
-                        return "<input type='checkbox' data-on-color='info' data-off-color='warning'>"
-                        break;
-                }
-            }
+
         },
         mounted() {
-            this.getDevices();
-            setTimeout(function() {
-                $('[type="checkbox"]').bootstrapSwitch()
-            }, 200)
+
 
         },
         watch() {

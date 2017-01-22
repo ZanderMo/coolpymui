@@ -3,12 +3,10 @@
 import Vue from 'vue'
 import App from './App'
 import VueRouter from 'vue-router'
-import MintUI from 'mint-ui'
-
-Vue.use(MintUI);
+import { AlertPlugin, ToastPlugin } from 'vux'
 
 import './assets/css/bootstrap.min.css'
-import './assets/css/bootstrap-switch.min.css'
+
 
 window.API_URL = 'http://192.168.2.73:6543';
 
@@ -31,12 +29,13 @@ const router = new VueRouter({
             children: [
                 { path: "setting", component: setting },
                 { path: "aboutCP", component: aboutCP },
+                { path: "nodeGps", component: nodeGps },
                 {
                     path: "devices",
                     component: devices,
                     children: [
                         { path: "nodeNum", component: nodeNum },
-                        { path: "nodeGps", component: nodeGps },
+                        
                         { path: "nodeImages", component: nodeImages },
                         { path: "nodeCustom", component: nodeCustom },
                     ]
@@ -51,4 +50,7 @@ const router = new VueRouter({
 const app = new Vue({
     router,
     render: h => h(App),
-}).$mount('#app')
+}).$mount('#app');
+
+
+
