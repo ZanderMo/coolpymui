@@ -3,7 +3,7 @@
         <div class="node-box">
             <div class="nav">
                 <h4>ID:{{$route.query.node.Id}} 名称:{{$route.query.node.Title}} </h4>
-                <router-link :to="{path:'/index/devices'}"><button class="btn btn-danger closeBtn">关 闭</button></router-link>
+                <router-link :to="{path:'/devices'}"><button class="btn btn-danger closeBtn">关 闭</button></router-link>
             </div>
             <div class="nodeDivMargin">节点描述：{{$route.query.node.About}}</div>
             <ul class="nodeDivMargin">
@@ -13,7 +13,7 @@
             <div style="clear:both"></div>
 <div class="nodeDivMargin">
     <group>
-        <datetime v-model="stTime" @on-change="" title="开始时间"></datetime>
+        <datetime v-model="stTime" format="YYYY-MM-DD HH:mm"  @on-change="" title="开始时间"></datetime>
         <datetime v-model="endTime" format="YYYY-MM-DD HH:mm" @on-change="" title="结束时间"></datetime>
     </group>
 </div>
@@ -29,7 +29,7 @@
 
 
 <script> 
-
+    import moment from 'moment'
     import { Datetime, Group, XButton } from 'vux'
 
     export default {
@@ -43,14 +43,16 @@
             return {
                 numData: [],
                 ApiKey: '',
-                stTime: new Date().format("yyyy-MM-dd HH:mm"),
-                endTime: new Date().toString(),
+                stTime:moment().format("YYYY-MM-DD 00:00"),
+                endTime: moment().format("YYYY-MM-DD HH:mm"),
             }
 
         },
         methods: {
             getData: function () {
-                alert(this.stTime);
+                let stTime=this.stTime.replace(' ','T')+':00.000Z';
+                let endTime=this.endTime.replace(' ','T')+':00.000Z';
+                alert(stTime);
                 this.ApiKey = sessionStorage.getItem('ApiKey');
                 let self = this;
                 let map = new BMap.Map("map-box"); // 定义地图
@@ -60,7 +62,7 @@
                 })); //增加左下角标尺
 
                 $.ajax({
-                    url: window.API_URL + '/api/hub/' + self.$route.query.hubID + '/node/' + self.$route.query.node.Id + '/json?start=' + self.stTime + '&end=' + self.endTime + '&interval=0&page=10',
+                    url: window.API_URL + '/api/hub/' + self.$route.query.hubID + '/node/' + self.$route.query.node.Id + '/json?start=' + stTime + '&end=' + endTime + '&interval=0&page=10',
                     dataType: 'json',
                     type: 'get',
                     headers: {
@@ -101,6 +103,8 @@
 
             },
             replay: function () {
+                let stTime=mountthis.stTime.replace(' ','T')+':00.000Z';
+                let endTime=this.endTime.replace(' ','T')+':00.000Z';
                 this.ApiKey = sessionStorage.getItem('ApiKey');
                 let self = this;
                 let map = new BMap.Map("map-box"); // 定义地图
@@ -110,7 +114,7 @@
                 })); //增加左下角标尺
                 let arrPois = [], arrshus = [], lushu;
                 $.ajax({
-                    url: window.API_URL + '/api/hub/' + self.$route.query.hubID + '/node/' + self.$route.query.node.Id + '/json?start=' + self.stTime + '&end=' + self.endTime + '&interval=0&page=10',
+                    url: window.API_URL + '/api/hub/' + self.$route.query.hubID + '/node/' + self.$route.query.node.Id + '/json?start=' + stTime + '&end=' + endTime + '&interval=0&page=10',
                     dataType: 'json',
                     type: 'get',
                     headers: {
@@ -167,24 +171,8 @@
 
         },
         mounted() {
-            this.getData();
-            Date.prototype.Format = function (fmt) { //author: meizz   
-                var o = {
-                    "M+": this.getMonth() + 1,                 //月份   
-                    "d+": this.getDate(),                    //日   
-                    "h+": this.getHours(),                   //小时   
-                    "m+": this.getMinutes(),                 //分   
-                    "s+": this.getSeconds(),                 //秒   
-                    "q+": Math.floor((this.getMonth() + 3) / 3), //季度   
-                    "S": this.getMilliseconds()             //毫秒   
-                };
-                if (/(y+)/.test(fmt))
-                    fmt = fmt.replace(RegExp.$1, (this.getFullYear() + "").substr(4 - RegExp.$1.length));
-                for (var k in o)
-                    if (new RegExp("(" + k + ")").test(fmt))
-                        fmt = fmt.replace(RegExp.$1, (RegExp.$1.length == 1) ? (o[k]) : (("00" + o[k]).substr(("" + o[k]).length)));
-                return fmt;
-            }
+
+           // this.getData();
         },
         watch() {
 

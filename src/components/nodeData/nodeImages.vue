@@ -3,7 +3,7 @@
         <div class="node-box">
             <div class="nav">
                 <h4>ID:{{$route.query.node.Id}} 名称:{{$route.query.node.Title}} </h4>
-                <router-link :to="{path:'/index/devices'}"><button class="btn btn-danger closeBtn">关 闭</button></router-link>
+                <router-link :to="{path:'/devices'}"><button class="btn btn-danger closeBtn">关 闭</button></router-link>
             </div>
             <div class="nodeAbout">节点描述：{{$route.query.node.About}}</div>
             <ul>

@@ -70,7 +70,7 @@
                         sessionStorage.setItem('identity', self.identity);
                         sessionStorage.setItem('ApiKey', result.data.Ukey);
                         self.$router.push({
-                            path: '/index'
+                            path: '/'
                         });
                     },
 

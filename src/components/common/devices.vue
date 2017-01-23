@@ -33,16 +33,16 @@
     <input type="range" style="display: block;" :max="item.CtrlerVal.split(',')[2]" :min="item.CtrlerVal.split(',')[1]" :step="item.CtrlerVal.split(',')[3]" :value="item.CtrlerVal.split(',')[0]">
 </div>
 <div v-if="item.Type===4" class="deviceItem"><img src="../../assets/images/val.png" class="DeviceImg">ID:{{item.Id}} 名称：{{item.Title}}
-    <router-link :to="{path:'/index/devices/nodeNum',query: {hubID:Device.Id,node:item}}">查看</router-link>
+    <router-link :to="{path:'/devices/nodeNum',query: {hubID:Device.Id,node:item}}">查看</router-link>
 </div>
 <div v-if="item.Type===5" class="deviceItem"><img src="../../assets/images/gps.png" class="DeviceImg">ID:{{item.Id}} 名称：{{item.Title}}
-    <router-link :to="{path:'/index/nodeGps',query: {hubID:Device.Id,node:item}}">查看</router-link>
+    <router-link :to="{path:'/nodeGps',query: {hubID:Device.Id,node:item}}">查看</router-link>
 </div>
 <div v-if="item.Type===6" class="deviceItem"><img src="../../assets/images/gen.png" class="DeviceImg">ID:{{item.Id}} 名称：{{item.Title}}
-    <router-link :to="{path:'/index/devices/nodeCustom',query: {hubID:Device.Id,node:item}}">查看</router-link>
+    <router-link :to="{path:'/devices/nodeCustom',query: {hubID:Device.Id,node:item}}">查看</router-link>
 </div>
 <div v-if="item.Type===7" class="deviceItem"><img src="../../assets/images/img.png" class="DeviceImg">ID:{{item.Id}} 名称：{{item.Title}}
-    <router-link :to="{path:'/index/devices/nodeImages',query: {hubID:Device.Id,node:item}}">查看</router-link>
+    <router-link :to="{path:'/devices/nodeImages',query: {hubID:Device.Id,node:item}}">查看</router-link>
 </div>
 </li>
 </ul>
@@ -450,7 +450,6 @@
             line-height: 40px;
             .addHub-font {
                 display: inline-block;
-                text-shadow: 1px 1px 2px #428bca;
             }
             .addHub-btn {
                 text-align: center;

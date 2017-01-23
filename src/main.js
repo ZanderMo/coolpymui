@@ -8,6 +8,7 @@ import { AlertPlugin, ToastPlugin } from 'vux'
 import './assets/css/bootstrap.min.css'
 
 
+
 window.API_URL = 'http://192.168.2.73:6543';
 
 import login from './components/singleView/loginView.vue'
@@ -19,30 +20,25 @@ import nodeNum from './components/nodeData/nodeNum.vue'
 import nodeGps from './components/nodeData/nodeGps.vue'
 import nodeImages from './components/nodeData/nodeImages.vue'
 import nodeCustom from './components/nodeData/nodeCustom.vue'
+import addHub from './components/manageHub/addHub.vue'
 
 Vue.use(VueRouter);
 
 const router = new VueRouter({
-    routes: [{
-            path: '/index',
-            component: index,
+    routes: [
+        { path: "/setting", component: setting },
+        { path: "/aboutCP", component: aboutCP },
+        { path: "/nodeGps", component: nodeGps },
+        {
+            path: "/devices",
+            component: devices,
             children: [
-                { path: "setting", component: setting },
-                { path: "aboutCP", component: aboutCP },
-                { path: "nodeGps", component: nodeGps },
-                {
-                    path: "devices",
-                    component: devices,
-                    children: [
-                        { path: "nodeNum", component: nodeNum },
-                        
-                        { path: "nodeImages", component: nodeImages },
-                        { path: "nodeCustom", component: nodeCustom },
-                    ]
-                },
+                { path: "nodeNum", component: nodeNum },
+                { path: "nodeImages", component: nodeImages },
+                { path: "nodeCustom", component: nodeCustom },
             ]
         },
-        { path: '/login', component: login },
+        { path: '/login', component: login, meta: { auth: true } },
     ]
 });
 
@@ -53,4 +49,11 @@ const app = new Vue({
 }).$mount('#app');
 
 
-
+router.beforeEach(function (to, from, next) {
+    let identity = sessionStorage.getItem('identity');
+    if (!identity && to.fullPath !== "/login") {
+        next({ path: '/login' });
+    } else {
+        next();
+    }
+});
